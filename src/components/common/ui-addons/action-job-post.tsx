@@ -7,6 +7,7 @@ import { DBName } from "@/utils/db-tables-names";
 import { Button, Select } from "antd";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import CountdownTimer from "../CountdownTimer";
 import DrawerModal from "../drawer-modal";
 
 function ActionJobPost({ val, record, refetch }: any) {
@@ -39,7 +40,19 @@ function ActionJobPost({ val, record, refetch }: any) {
   const handleUpdate = async () => {
     const result = await updateRecord(DBName.jobs, val, {
       job_status: "active",
+      publish_time: new Date(),
     });
+    console.log(result);
+    if (result?.success) {
+      refetch();
+    }
+  };
+
+  const handleClose = async () => {
+    const result = await updateRecord(DBName.jobs, val, {
+      job_status: "closed",
+    });
+    console.log(result);
     if (result?.success) {
       refetch();
     }
@@ -76,15 +89,23 @@ function ActionJobPost({ val, record, refetch }: any) {
   return (
     <div>
       {record?.job_status === "draft" ? (
-        <Button onClick={handleUpdate} type="primary">
-          Publish
-        </Button>
-      ) : (
+        <div>
+          <Button onClick={handleUpdate} type="primary">
+            Publish
+          </Button>
+        </div>
+      ) : record?.job_status === "active" ? (
         <div className="space-y-2">
           <Button onClick={handleNavigate}>View Responses</Button>
           <Button onClick={onToggle}>Respond</Button>
+          <Button variant="solid" onClick={handleClose}>
+            Close Job
+          </Button>
+          <CountdownTimer startTime={record?.publish_time} />
         </div>
-      )}
+      ) : record?.job_status === "closed" ? (
+        <div>Job Closed</div>
+      ) : null}
       <div>
         <DrawerModal open={open} title="Add Candidates" onClose={onToggle}>
           <div>
