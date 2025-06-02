@@ -207,7 +207,7 @@ function Page() {
       <div className="flex justify-between items-center mb-4">
         <span className="font-semibold text-xl">Clients</span>
         <Button type="primary" onClick={onToggle}>
-          Create New Client
+          Add new candidate
         </Button>
       </div>
 
@@ -241,7 +241,7 @@ function Page() {
         <DrawerModal
           open={open}
           className={"80%"}
-          title="Create New Candidate"
+          title="Add new candidate"
           onClose={onToggle}
         >
           <div>
